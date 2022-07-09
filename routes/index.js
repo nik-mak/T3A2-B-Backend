@@ -4,9 +4,8 @@ const session = require('express-session')
 const MongoStore = require('connect-mongo')
 const authRoutes = require('./auth-routes')
 const itemRoutes = require('./item_routes')
+const userRoutes = require('./user-routes')
 const auth = require('../middleware/authenticate')
-
-const UserModel = require("../models/user")
 
 const sessionConfig = {
   name: 'UID', // name of cookie
@@ -27,18 +26,6 @@ router.use(session(sessionConfig))
 
 router.use('/auth', authRoutes)
 router.use('/items', itemRoutes)
-
-// Generic routes to test login/logout
-router.post("/welcome", auth, (req, res) => {
-  res.status(200).send("Welcome!")
-})
-
-router.get("/all", auth, async (req, res) => {
-  if (req.session.user.role == 'admin') {
-    res.status(200).send(await UserModel.find())
-  } else {
-    res.status(401).send("You don't have access!")
-  }
-})
+router.use('/user', auth, userRoutes)
 
 module.exports = router

@@ -12,7 +12,7 @@ router.use(express.json())
 router.post("/register", async (req, res) => {
    try {
     // Get user input
-    const { name, email, password, role } = req.body
+    const { name, email, password } = req.body
 
     // Validate user input
     if (!(name && email && password)) {
@@ -52,8 +52,10 @@ router.post("/register", async (req, res) => {
     // Save token
     req.session.token = token
 
+    const cookie = req.session
+
     // Return new user
-    res.status(201).json(user) 
+    res.status(201).json(cookie) 
   } catch (err) {
     console.log(err) 
   }
@@ -86,10 +88,12 @@ router.post("/login", async (req, res) => {
       )  
 
       // Save the users token to cookie
-      req.session.token = token 
+      req.session.token = token
+
+      const cookie = req.session
 
       // Return the user
-      return res.status(200).json(user)  
+      return res.status(200).send(cookie)  
     }
     return res.status(400).send("Invalid Credentials")  
   } catch { 

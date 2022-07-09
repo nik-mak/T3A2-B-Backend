@@ -52,10 +52,8 @@ router.post("/register", async (req, res) => {
     // Save token
     req.session.token = token
 
-    const cookie = req.session
-
     // Return new user
-    res.status(201).json(cookie) 
+    res.status(201).json(user) 
   } catch (err) {
     console.log(err) 
   }
@@ -90,10 +88,8 @@ router.post("/login", async (req, res) => {
       // Save the users token to cookie
       req.session.token = token
 
-      const cookie = req.session
-
       // Return the user
-      return res.status(200).send(cookie)  
+      return res.status(200).send(user)  
     }
     return res.status(400).send("Invalid Credentials")  
   } catch { 

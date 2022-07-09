@@ -3,7 +3,9 @@ const router = express.Router()
 const session = require('express-session')
 const MongoStore = require('connect-mongo')
 const authRoutes = require('./auth-routes')
+const itemRoutes = require('./item_routes')
 const auth = require('../middleware/authenticate')
+
 const UserModel = require("../models/user")
 
 const sessionConfig = {
@@ -24,6 +26,7 @@ const sessionConfig = {
 router.use(session(sessionConfig))
 
 router.use('/auth', authRoutes)
+router.use('/items', itemRoutes)
 
 // Generic routes to test login/logout
 router.post("/welcome", auth, (req, res) => {

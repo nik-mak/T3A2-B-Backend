@@ -18,7 +18,9 @@ const sessionConfig = {
   resave: false,
   saveUninitialized: true, // set to false in production, user has to give consent
   store: MongoStore.create({
-    mongoUrl: process.env.MONGO_STORE_URI
+    mongoUrl: process.env.MONGO_STORE_URI,
+    autoRemove: 'interval',
+    autoRemoveInterval: 60
   })
 }
 

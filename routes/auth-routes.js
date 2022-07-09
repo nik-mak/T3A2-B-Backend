@@ -12,11 +12,11 @@ router.use(express.json())
 router.post("/register", async (req, res) => {
    try {
     // Get user input
-    const { name, email, password } = req.body
+    const { name, email, password, role } = req.body
 
     // Validate user input
     if (!(name && email && password)) {
-      return res.status(400).send("All input is required") 
+      return res.status(400).send("All input is required")
     }
 
     // Check if user already exist in our database

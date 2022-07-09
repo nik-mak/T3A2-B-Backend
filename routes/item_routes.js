@@ -8,16 +8,20 @@ router.get("/", async (req, res) => {
         .catch(err => res.status(502).send({ error: err.message }))
 })
 
+router.use((req, res) => {
+    if (req.session.user.role == "customer") res.status(401).send({ error: "You don't have access!" })
+})
+
 router.get("/:id", async (req, res) => {
     await ItemModel.findById(req.params.id)
         .then(item => res.send(item))
         .catch(err => res.status(404).send({ error: `Enable to find item with id ${req.params.id}`}))
 })
 
-router.post("/", async (req, res) => {
+router.post("/add", async (req, res) => {
     await ItemModel.create(req.body)
-        .then(item => res.status(201).send(item))
-        .catch(err => res.status(400).send({ error: err.message }))
+        .then((item) => res.status(201).send(item))
+        .catch((err) => res.status(400).send({ error: err.message }))
 })
 
 router.put("/:id", async (req, res) => {

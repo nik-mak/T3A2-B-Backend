@@ -16,7 +16,7 @@ router.post("/register", async (req, res) => {
 
     // Validate user input
     if (!(name && email && password)) {
-      return res.status(400).send("All input is required") 
+      return res.status(400).send("All input is required")
     }
 
     // Check if user already exist in our database
@@ -33,8 +33,7 @@ router.post("/register", async (req, res) => {
     const user = await UserModel.create({
       name: name,
       email: email.toLowerCase(),
-      password: encryptedPassword,
-      role: role
+      password: encryptedPassword
     })
 
     // Create cookie with user details

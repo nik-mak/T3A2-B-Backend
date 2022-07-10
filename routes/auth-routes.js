@@ -12,7 +12,7 @@ router.use(express.json())
 router.post("/register", async (req, res) => {
    try {
     // Get user input
-    const { name, email, password, role } = req.body
+    const { name, email, password } = req.body
 
     // Validate user input
     if (!(name && email && password)) {
@@ -33,8 +33,7 @@ router.post("/register", async (req, res) => {
     const user = await UserModel.create({
       name: name,
       email: email.toLowerCase(),
-      password: encryptedPassword,
-      role: role
+      password: encryptedPassword
     })
 
     // Create cookie with user details

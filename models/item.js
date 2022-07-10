@@ -14,7 +14,11 @@ const itemSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    sold: Boolean
+    imageId: String,
+    sold: {
+        type: Boolean,
+        default: false
+    }
 })
 
 const ItemModel = mongoose.model("Item", itemSchema)

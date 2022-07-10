@@ -39,11 +39,7 @@ router.post("/add", upload.single("image"), async (req, res) => {
 router.put("/:id", upload.single("image"), async (req, res) => {
     try {
         const item = await ItemModel.findById(req.params.id)
-
-        if (req.file) {
-            await cloudinary.uploader.destroy(item.imageId)
-            const imageUploaded = await cloudinary.uploader.upload(req.file.path)
-        }        
+        const imageUploaded = await cloudinary.uploader.upload(req.file.path)          
 
         await ItemModel.updateOne(
           item,
@@ -51,8 +47,8 @@ router.put("/:id", upload.single("image"), async (req, res) => {
             name: req.body.name,
             price: req.body.price,
             size: req.body.size,
-            image: (imageUploaded.secure_url || item.image),
-            imageId: (imageUploaded.public_id || item.imageId),
+            image: imageUploaded.secure_url,
+            imageId: imageUploaded.public_id,
             sold: req.body.sold,
           },
           {
@@ -70,7 +66,9 @@ router.delete("/:id", async (req, res) => {
     try {
         const item = await ItemModel.findById(req.params.id)
 
-        await cloudinary.uploader.destroy(item.imageId)
+        await cloudinary.uploader.destroy(item.imageId, function (error, result) {
+            console.log(result, error)
+        })
 
         await ItemModel.deleteOne(item)
         res.sendStatus(204)

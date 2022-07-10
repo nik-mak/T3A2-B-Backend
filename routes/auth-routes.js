@@ -27,14 +27,13 @@ router.post("/register", async (req, res) => {
     }
 
     //Encrypt user password
-    encryptedPassword = await bcrypt.hash(password, 10) 
+    const encryptedPassword = await bcrypt.hash(password, 10) 
 
     // Create user in the database
     const user = await UserModel.create({
       name: name,
       email: email.toLowerCase(),
       password: encryptedPassword,
-      role: role
     })
 
     // Create cookie with user details
@@ -53,7 +52,12 @@ router.post("/register", async (req, res) => {
     req.session.token = token
 
     // Return new user
-    res.status(201).json(user) 
+    res.status(201).json({
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role
+    }) 
   } catch (err) {
     console.log(err) 
   }
@@ -89,7 +93,12 @@ router.post("/login", async (req, res) => {
       req.session.token = token
 
       // Return the user
-      return res.status(200).send(user)  
+      return res.status(200).json({
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role
+      })   
     }
     return res.status(400).send("Invalid Credentials")  
   } catch { 

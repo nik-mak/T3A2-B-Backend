@@ -7,7 +7,8 @@
     "start": "node index.js",
     "dev": "nodemon index.js",
     "test": "jest --watchAll",
-    "test-cc": "jest --coverage"
+    "test-cc": "jest --coverage",
+    "test-script": "jest app.test.js --forceExit"
   },
   "keywords": [],
   "author": "",

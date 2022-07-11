@@ -22,4 +22,20 @@ router.get("/:id", async (req, res) => {
   }
 })
 
+// is logged in?
+router.get("/loggedin", async(req, res) => {
+  if (req.session.user) {
+    const { _id, name, email, role } = req.session
+    return res.status(200).json({
+      id: _id,
+      name: name,
+      email: email,
+      role: role
+    })
+    
+  } else {
+    return res.status(401).send("Not Logged In")
+  }
+})
+
 module.exports = router

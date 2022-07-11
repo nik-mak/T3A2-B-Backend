@@ -118,7 +118,7 @@ router.get("/loggedin", async (req, res) => {
 });
 
 // Logout
-router.post("/logout", (req, res) => {
+router.post('/logout', (req, res) => {
   if (req.session.user) {
     req.session.destroy((err) => {
       if (err) {

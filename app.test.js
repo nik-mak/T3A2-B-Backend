@@ -1,5 +1,8 @@
 const app = require("./app")
 const request = require("supertest")
+const mongoose = require("./db/connection")
+
+afterAll(async () => await mongoose.disconnect())
 
 describe("Items routes", () => {
     test("Display all catalogue items", async () => {

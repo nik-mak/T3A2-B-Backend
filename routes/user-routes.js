@@ -1,25 +1,30 @@
-const express = require("express")
-const router = express.Router()
-const UserModel = require("../models/user")
+const express = require("express");
+const router = express.Router();
+const UserModel = require("../models/user");
 
-router.post("/welcome", (req, res) => {
-  res.status(200).send("Welcome!")
-})
-
-router.get("/all", async (req, res) => {
-  if (req.session.user.role == 'admin') {
-    res.status(200).send(await UserModel.find())
-  } else {
-    res.status(401).send("You don't have access!")
-  }
-})
-
+// Return current user
 router.get("/:id", async (req, res) => {
   try {
-    res.status(200).send(await UserModel.findById(req.session.user._id))
+    res.status(200).send(await UserModel.findById(req.session.user._id));
   } catch (error) {
-    res.status(404).send({ error: 'Cannot find user' })
+    res.status(404).send({ error: "Cannot find user" });
   }
-})
+});
 
-module.exports = router
+// Edit user account
+router.patch("/:id", async (req, res) => {
+  if (req.session.user._id == req.params.id) {
+    const { name, email, password } = req.body;
+    const encryptedPassword = await bcrypt.hash(password, 10);
+    const updatedUser = await UserModel.findByIdAndUpdate(
+      req.params.id,
+      { name: name, email: email, password: encryptedPassword },
+      { new: true }
+    );
+    res.status(200).send(updatedUser);
+  } else {
+    res.status(400).send("Couldn't update user");
+  }
+});
+
+module.exports = router;

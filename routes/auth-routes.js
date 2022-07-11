@@ -1,43 +1,42 @@
-require("dotenv").config() 
-const express = require("express")
-const bcrypt = require("bcrypt")
-const jwt = require('jsonwebtoken')
-const UserModel = require("../models/user")
-const router = express.Router()
+require("dotenv").config();
+const express = require("express");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const UserModel = require("../models/user");
+const router = express.Router();
 
-router.use(express.json())
-
+router.use(express.json());
 
 // Register new user
 router.post("/register", async (req, res) => {
-   try {
+  try {
     // Get user input
-    const { name, email, password } = req.body
+    const { name, email, password } = req.body;
 
     // Validate user input
     if (!(name && email && password)) {
-      return res.status(400).send("All input is required")
+      return res.status(400).send("All input is required");
     }
 
     // Check if user already exist in our database
-    const existingUser = await UserModel.findOne({ email }) 
+    const existingUser = await UserModel.findOne({ email });
 
     if (existingUser) {
-      return res.status(409).send("User Already Exist. Please Login") 
+      return res.status(409).send("User Already Exist. Please Login");
     }
 
     //Encrypt user password
-    const encryptedPassword = await bcrypt.hash(password, 10) 
+    const encryptedPassword = await bcrypt.hash(password, 10);
 
     // Create user in the database
     const user = await UserModel.create({
       name: name,
       email: email.toLowerCase(),
-      password: encryptedPassword
-    })
+      password: encryptedPassword,
+    });
 
     // Create cookie with user details
-    req.session.user = user
+    req.session.user = user;
 
     // Create token
     const token = jwt.sign(
@@ -46,39 +45,39 @@ router.post("/register", async (req, res) => {
       {
         expiresIn: "2h",
       }
-    ) 
+    );
 
     // Save token
-    req.session.token = token
+    req.session.token = token;
 
     // Return new user
     res.status(201).json({
       id: user._id,
       name: user.name,
       email: user.email,
-      role: user.role
-    }) 
+      role: user.role,
+    });
   } catch (err) {
-    console.log(err) 
+    console.log(err);
   }
-}) 
+});
 
 // Login
 router.post("/login", async (req, res) => {
-   try {
+  try {
     // Get user input
-    const { email, password } = req.body  
+    const { email, password } = req.body;
 
     // Validate user input
     if (!(email && password)) {
-      return res.status(400).send("All input is required")  
+      return res.status(400).send("All input is required");
     }
     // Validate if user exist in our database
-    const user = await UserModel.findOne({ email })  
+    const user = await UserModel.findOne({ email });
 
     if (user && (await bcrypt.compare(password, user.password))) {
       // Create cookie with user details
-      req.session.user = user
+      req.session.user = user;
 
       // Create token
       const token = jwt.sign(
@@ -87,38 +86,50 @@ router.post("/login", async (req, res) => {
         {
           expiresIn: "2h",
         }
-      )  
+      );
 
       // Save the users token to cookie
-      req.session.token = token
+      req.session.token = token;
 
       // Return the user
       return res.status(200).json({
         id: user._id,
         name: user.name,
         email: user.email,
-        role: user.role
-      })   
+        role: user.role,
+      });
     }
-    return res.status(400).send("Invalid Credentials")  
-  } catch { 
-    res.send()
+    return res.status(400).send("Invalid Credentials");
+  } catch {
+    res.send();
   }
-})
+});
+
+router.get("/loggedin", async (req, res) => {
+  if (req.session.user) {
+    const { _id, name, email, role } = req.session;
+    res.status(200).json({
+      id: _id,
+      name: name,
+      email: email,
+      role: role,
+    });
+  }
+});
 
 // Logout
-router.get('/logout', (req, res) => {
+router.post("/logout", (req, res) => {
   if (req.session.user) {
-    req.session.destroy(err => {
+    req.session.destroy((err) => {
       if (err) {
-        res.status(500).send('Something wrong with logout')
+        res.status(500).send("Something wrong with logout");
       } else {
-        res.status(200).send('Successfully logged out')
+        res.status(200).send("Successfully logged out");
       }
-    })
+    });
   } else {
-    res.status(200).send('Not logged in')
+    res.status(200).send("Not logged in");
   }
-})
+});
 
-module.exports = router
+module.exports = router;

@@ -105,18 +105,6 @@ router.post("/login", async (req, res) => {
   }
 });
 
-router.get("/loggedin", async (req, res) => {
-  if (req.session.user) {
-    const { _id, name, email, role } = req.session;
-    res.status(200).json({
-      id: _id,
-      name: name,
-      email: email,
-      role: role,
-    });
-  }
-});
-
 // Logout
 router.post('/logout', (req, res) => {
   if (req.session.user) {

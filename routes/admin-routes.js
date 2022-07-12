@@ -6,8 +6,9 @@ const UserModel = require("../models/user");
 // Get all staff and admin accounts
 router.get("/all/staff", async (req, res) => {
   try {
-    const staff = await UserModel.find({ role: "staff", role: "admin" });
-    res.status(200).send(staff);
+    const staff = await UserModel.find({ role: "staff" });
+    const admin = await UserModel.find({ role: "admin" });
+    res.status(200).send([...staff, ...admin]);
   } catch (err) {}
 });
 

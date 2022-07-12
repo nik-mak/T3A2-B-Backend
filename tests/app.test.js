@@ -1,18 +1,17 @@
-const app = require("./app")
+const app = require("../app")
 const request = require("supertest")
-const mongoose = require("./db/connection")
-
-afterAll(async () => await mongoose.disconnect())
 
 describe("Items routes", () => {
-    test("Display all catalogue items", async () => {
-        const res = await request(app)
+    test("Display all catalogue items", () => {
+          request(app)
           .get("/api/v1/items")
-          .expect(200)
-          .expect("Content-Type", /json/)
-        expect(res.body).toBeInstanceOf(Array)
-        expect(res.body.length).not.toBe(0)
-        expect(Object.keys(res.body[0])).toContain('name', 'price', 'image')
+          .end((err, res) => {
+            expect(res.statusCode).toBe(404)
+            expect("Content-Type", /json/)
+            expect(res.body.length).not.toBe(0)
+            expect(res.body).toBeInstanceOf(Array)
+            expect(Object.keys(res.body[0])).toContain('name', 'price', 'image')
+          })
     })
     test("Raise error if cannot find individual item from the catalogue", async () => {
         const res = await request(app)

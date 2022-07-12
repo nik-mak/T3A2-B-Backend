@@ -2,11 +2,16 @@ const express = require("express");
 const router = express.Router();
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
+
 const authRoutes = require("./auth-routes");
 const itemRoutes = require("./item_routes");
 const cartRoutes = require("./cart-routes");
 const userRoutes = require("./user-routes");
+const adminRoutes = require("./admin-routes");
+
 const auth = require("../middleware/authenticate");
+const adminAuth = require("../middleware/admin-auth");
+
 const ItemModel = require("../models/item");
 
 const sessionConfig = {
@@ -37,7 +42,8 @@ router.get("/", (req, res) => {
 
 router.use("/auth", authRoutes);
 router.use("/items", auth, itemRoutes);
-router.use("/user", auth, userRoutes);
 router.use("/cart", auth, cartRoutes);
+router.use("/user", auth, userRoutes);
+router.use("/admin", adminAuth, adminRoutes);
 
 module.exports = router;

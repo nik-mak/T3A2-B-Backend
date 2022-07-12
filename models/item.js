@@ -1,4 +1,4 @@
-const mongoose = require("../db/connection")
+const mongoose = require("mongoose");
 
 const itemSchema = new mongoose.Schema(
   {
@@ -24,6 +24,6 @@ const itemSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const ItemModel = mongoose.model("Item", itemSchema)
+const ItemModel = mongoose.model("Item", itemSchema);
 
-module.exports = ItemModel
+module.exports = ItemModel;

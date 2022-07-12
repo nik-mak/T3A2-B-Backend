@@ -30,6 +30,7 @@ router.get("/", async (req, res) => {
   res.status(200).send(user.cart);
 });
 
+// Remove specific item from user's cart
 router.delete("/:id", async (req, res) => {
   const item = await ItemModel.findById(req.params.id);
   await UserModel.findByIdAndUpdate(req.session.user._id, {

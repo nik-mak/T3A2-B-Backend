@@ -58,7 +58,7 @@ router.post("/register", async (req, res) => {
       role: user.role,
     });
   } catch (err) {
-    console.log(err);
+    res.status(400).send({ error: err.message });
   }
 });
 
@@ -100,13 +100,13 @@ router.post("/login", async (req, res) => {
       });
     }
     return res.status(400).send("Invalid Credentials");
-  } catch {
-    res.send();
+  } catch (err) {
+    res.send(400).send({ error: err.message });
   }
 });
 
 // Logout
-router.post('/logout', (req, res) => {
+router.post("/logout", (req, res) => {
   if (req.session.user) {
     req.session.destroy((err) => {
       if (err) {

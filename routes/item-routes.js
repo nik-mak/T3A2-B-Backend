@@ -2,39 +2,41 @@ const express = require("express");
 const router = express.Router();
 const ItemModel = require("../models/item");
 
+const storeAuth = require("../middleware/store-auth");
+
 const upload = require("../middleware/multer");
 const cloudinary = require("cloudinary").v2;
 
 // Defining that all following routes are only permitted for staff and admin users
-router.use((req, res, next) => {
-  req.session.user.role === "customer"
-    ? res.status(401).send({ error: "You don't have access!" })
-    : next();
-});
+router.use(storeAuth);
 
-router.get("/:id", (req, res) => {
-  ItemModel.findById(req.params.id)
-    .then((item) => res.send(item))
-    .catch((err) =>
-      res
-        .status(404)
-        .send({ error: `Enable to find item with id ${req.params.id}` })
-    );
+router.get("/:id", async (req, res) => {
+  try {
+    await ItemModel.findById(req.params.id);
+    res.status(200).send(item);
+  } catch (err) {
+    res
+      .status(400)
+      .send({ error: `Enable to find item with id ${req.params.id}` });
+  }
 });
 
 router.post("/add", upload.single("image"), async (req, res) => {
-  const imageUploaded = await cloudinary.uploader.upload(req.file.path);
+  try {
+    const imageUploaded = await cloudinary.uploader.upload(req.file.path);
 
-  ItemModel.create({
-    name: req.body.name,
-    price: req.body.price,
-    size: req.body.size,
-    image: imageUploaded.secure_url,
-    imageId: imageUploaded.public_id,
-    sold: req.body.sold,
-  })
-    .then((item) => res.status(201).send(item))
-    .catch((err) => res.status(400).send({ error: err.message }));
+    await ItemModel.create({
+      name: req.body.name,
+      price: req.body.price,
+      size: req.body.size,
+      image: imageUploaded.secure_url,
+      imageId: imageUploaded.public_id,
+      sold: req.body.sold,
+    });
+    res.status(201).send(item);
+  } catch (err) {
+    res.status(400).send({ error: err.message });
+  }
 });
 
 router.put("/:id", upload.single("image"), async (req, res) => {

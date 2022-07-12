@@ -8,7 +8,7 @@
     "dev": "nodemon index.js",
     "test": "jest --watchAll",
     "test-cc": "jest --coverage",
-    "test-script": "jest app.test.js --forceExit"
+    "test-script": "jest tests/ --forceExit"
   },
   "keywords": [],
   "author": "",

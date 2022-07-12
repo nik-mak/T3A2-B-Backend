@@ -1,11 +1,13 @@
 const express = require("express");
 const router = express.Router();
+
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
 
 const authRoutes = require("./auth-routes");
 const itemRoutes = require("./item-routes");
 const cartRoutes = require("./cart-routes");
+const orderRoutes = require("./order-routes");
 const userRoutes = require("./user-routes");
 const adminRoutes = require("./admin-routes");
 
@@ -43,6 +45,7 @@ router.get("/", (req, res) => {
 router.use("/auth", authRoutes);
 router.use("/items", auth, itemRoutes);
 router.use("/cart", auth, cartRoutes);
+router.use("/order", auth, orderRoutes);
 router.use("/user", auth, userRoutes);
 router.use("/admin", adminAuth, adminRoutes);
 

@@ -22,9 +22,9 @@ router.put("/:id", async (req, res) => {
 // Display all items inside user's cart
 router.get("/", async (req, res) => {
   const user = await UserModel.findById(req.session.user._id).populate("cart", [
-    "_id",
     "name",
     "price",
+    "size",
     "image",
   ]);
   res.status(200).send(user.cart);

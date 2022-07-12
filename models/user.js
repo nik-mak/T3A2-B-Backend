@@ -1,4 +1,5 @@
-const mongoose = require("../db/connection");
+const mongoose = require('../db/connection')
+const { Schema } = mongoose
 
 const UserModel = mongoose.model(
   "User",
@@ -18,6 +19,7 @@ const UserModel = mongoose.model(
       type: String,
       default: "customer",
     },
+    cart: [{ type: Schema.Types.ObjectId, ref: 'Item' }]
   })
 );
 

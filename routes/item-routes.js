@@ -5,20 +5,15 @@ const ItemModel = require("../models/item");
 const upload = require("../middleware/multer");
 const cloudinary = require("cloudinary").v2;
 
-router.get("/", async (req, res) => {
-  await ItemModel.find()
-    .then((items) => res.send(items))
-    .catch((err) => res.status(502).send({ error: err.message }));
-});
-
+// Defining that all following routes are only permitted for staff and admin users
 router.use((req, res, next) => {
-  req.session.user.role == "customer"
+  req.session.user.role === "customer"
     ? res.status(401).send({ error: "You don't have access!" })
     : next();
 });
 
-router.get("/:id", async (req, res) => {
-  await ItemModel.findById(req.params.id)
+router.get("/:id", (req, res) => {
+  ItemModel.findById(req.params.id)
     .then((item) => res.send(item))
     .catch((err) =>
       res
@@ -30,7 +25,7 @@ router.get("/:id", async (req, res) => {
 router.post("/add", upload.single("image"), async (req, res) => {
   const imageUploaded = await cloudinary.uploader.upload(req.file.path);
 
-  await ItemModel.create({
+  ItemModel.create({
     name: req.body.name,
     price: req.body.price,
     size: req.body.size,

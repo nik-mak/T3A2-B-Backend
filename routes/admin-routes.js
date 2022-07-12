@@ -7,9 +7,6 @@ const UserModel = require("../models/user");
 router.get("/all/staff", async (req, res) => {
   try {
     const staff = await UserModel.find({ role: "staff", role: "admin" });
-
-    console.log(staff);
-
     res.status(200).send(staff);
   } catch (err) {}
 });

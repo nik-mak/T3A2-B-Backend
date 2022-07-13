@@ -5,18 +5,9 @@ const ItemModel = require("../models/item");
 const pagination = require("../middleware/pagination");
 
 // Display full catalogue of available items on the home page
-router.get("/", async (req, res) => {
-    try {
-    res.send(await ItemModel.find({ sold: false }));
-  } catch (err) {
-    res.status(502).send({ error: err.message });
-  }
-});
-
-router.get("/", async (req, res) => {
-  console.log(req);
+router.get("/", pagination(ItemModel),(req, res) => {
   try {
-    res.send(await ItemModel.find());
+    res.send(res.paginatedResults);
   } catch (err) {
     res.status(502).send({ error: err.message });
   }

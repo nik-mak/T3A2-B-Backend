@@ -64,7 +64,7 @@ router.delete("/:id", async (req, res) => {
     }
 
     // Delete account from database
-    await UserModel.deleteOne(user);
+    await UserModel.findByIdAndDelete(req.params.id);
 
     res.sendStatus(204);
   } catch (err) {

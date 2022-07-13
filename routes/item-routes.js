@@ -1,14 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const ItemModel = require("../models/item");
-
-const storeAuth = require("../middleware/store-auth");
-
 const upload = require("../middleware/multer");
 const cloudinary = require("cloudinary").v2;
-
-// Defining that all following routes are only permitted for staff and admin users
-router.use(storeAuth);
 
 router.get("/:id", async (req, res) => {
   try {

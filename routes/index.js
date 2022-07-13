@@ -14,6 +14,8 @@ const catalogueRoutes = require("./catalogue-routes");
 
 const auth = require("../middleware/authenticate");
 const adminAuth = require("../middleware/admin-auth");
+const customerAuth = require("../middleware/customer-auth");
+const storeAuth = require("../middleware/store-auth");
 
 const sessionConfig = {
   name: "UID", // name of cookie
@@ -36,8 +38,8 @@ router.use(session(sessionConfig));
 
 router.use("/auth", authRoutes);
 router.use("/catalogue", catalogueRoutes);
-router.use("/items", auth, itemRoutes);
-router.use("/cart", auth, cartRoutes);
+router.use("/items", auth, storeAuth,itemRoutes);
+router.use("/cart", auth, customerAuth,cartRoutes);
 router.use("/order", auth, orderRoutes);
 router.use("/user", auth, userRoutes);
 router.use("/admin", adminAuth, adminRoutes);

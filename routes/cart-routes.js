@@ -3,11 +3,6 @@ const router = express.Router();
 const ItemModel = require("../models/item");
 const UserModel = require("../models/user");
 
-const customerAuth = require("../middleware/customer-auth");
-
-// Defining that all following routes are authorised to shoppers only
-router.use(customerAuth);
-
 // Add items into user's cart (order not yet created)
 router.put("/:id", async (req, res) => {
   try {
@@ -18,8 +13,7 @@ router.put("/:id", async (req, res) => {
     res.status(201).send("Item added into cart!");
   } catch (err) {
     res.status(400).send({ error: err.message });
-  }
-  
+  }  
 });
 
 // Display all items inside user's cart

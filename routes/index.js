@@ -1,18 +1,21 @@
 const express = require("express");
 const router = express.Router();
+
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
 
 const authRoutes = require("./auth-routes");
 const itemRoutes = require("./item-routes");
 const cartRoutes = require("./cart-routes");
+const orderRoutes = require("./order-routes");
 const userRoutes = require("./user-routes");
 const adminRoutes = require("./admin-routes");
+const catalogueRoutes = require("./catalogue-routes");
 
 const auth = require("../middleware/authenticate");
 const adminAuth = require("../middleware/admin-auth");
-
-const ItemModel = require("../models/item");
+const customerAuth = require("../middleware/customer-auth");
+const storeAuth = require("../middleware/store-auth");
 
 const sessionConfig = {
   name: "UID", // name of cookie
@@ -33,16 +36,11 @@ const sessionConfig = {
 
 router.use(session(sessionConfig));
 
-// Display full catalogue of available items on the home page
-router.get("/", (req, res) => {
-  ItemModel.find({ sold: false })
-    .then((items) => res.send(items))
-    .catch((err) => res.status(502).send({ error: err.message }));
-});
-
 router.use("/auth", authRoutes);
-router.use("/items", auth, itemRoutes);
-router.use("/cart", auth, cartRoutes);
+router.use("/catalogue", catalogueRoutes);
+router.use("/items", auth, storeAuth,itemRoutes);
+router.use("/cart", auth, customerAuth,cartRoutes);
+router.use("/order", auth, orderRoutes);
 router.use("/user", auth, userRoutes);
 router.use("/admin", adminAuth, adminRoutes);
 

@@ -5,7 +5,7 @@ const ItemModel = require("../models/item");
 const pagination = require("../middleware/pagination");
 
 // Display full catalogue of available items on the home page
-router.get("/", pagination(ItemModel),(req, res) => {
+router.post("/", pagination(ItemModel),(req, res) => {
   try {
     res.send(res.paginatedResults);
   } catch (err) {

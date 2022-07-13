@@ -25,7 +25,7 @@ router.post("/add", upload.single("image"), async (req, res) => {
   try {
     const imageUploaded = await cloudinary.uploader.upload(req.file.path);
 
-    await ItemModel.create({
+    const item = await ItemModel.create({
       name: req.body.name,
       price: req.body.price,
       size: req.body.size,

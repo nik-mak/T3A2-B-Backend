@@ -6,10 +6,11 @@ const ItemModel = require("../models/item");
 
 const customerAuth = require("../middleware/customer-auth");
 const storeAuth = require("../middleware/store-auth");
+const pagination = require("../middleware/pagination");
 
 // Create new order from cart
 // Customer access only
-router.post("/", customerAuth, async (req, res) => {
+router.post("/add", customerAuth, async (req, res) => {
   try {
     const user = await UserModel.findById(req.session.user._id);
     const items = user.cart;
@@ -30,13 +31,10 @@ router.post("/", customerAuth, async (req, res) => {
 
 // Display all orders from the logged-in user
 // Customer access only
-router.get("/", customerAuth, async (req, res) => {
+// Sends response with the pagination, sorting and filter
+router.post("/", customerAuth, pagination(OrderModel), async (req, res) => {
   try {
-    const orders = await OrderModel.find(
-      { user: req.session.user._id },
-      { collected: 1, items: 1 }
-    ).populate("items", ["name", "price", "size", "image"]);
-    res.send(orders);
+    res.send(res.paginatedResults);
   } catch (err) {
     res.status(400).send({ error: err.message });
   }
@@ -46,7 +44,7 @@ router.get("/", customerAuth, async (req, res) => {
 // to staff and admin users
 router.use(storeAuth);
 
-// Update order as collected
+// Mark order as collected
 router.patch("/:id", async (req, res) => {
   try {
     await OrderModel.findByIdAndUpdate(req.params.id, { collected: true });
@@ -55,21 +53,13 @@ router.patch("/:id", async (req, res) => {
   }
 });
 
-// Display all orders
-router.get("/store", async (req, res) => {
+// Display all orders with pagination, sorting and filter
+router.post("/store", pagination(OrderModel), async (req, res) => {
   try {
-    const orders = await OrderModel.find(
-      {},
-      { collected: 1, items: 1, user: 1 }
-    ).populate("items", ["name", "price", "size", "image"]);
-    res.send(orders);
+    res.send(res.paginatedResults);
   } catch (err) {
     res.status(400).send({ error: err.message });
   }
 });
-// Display all orders not collected (including user's name)
-
-// Display all order by date
-// TODO - Sorting and pagination
 
 module.exports = router;

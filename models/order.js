@@ -6,6 +6,7 @@ const orderSchema = new mongoose.Schema(
     user: { type: Schema.Types.ObjectId, ref: "User" },
     collected: { type: Boolean, default: false },
     items: [{ type: Schema.Types.ObjectId, ref: "Item" }],
+    totalPrice: Number,
   },
   { timestamps: true }
 );

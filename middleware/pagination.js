@@ -10,25 +10,12 @@ const paginatedResults = (model) => {
     let querySort = {};
     let queryFilter = {};
     const itemAttr = ["name", "price", "size", "image"];
+    let orderAttr = ["collected", "items", "totalPrice", "createdAt"];
 
     const startIndex = (page - 1) * amount;
     const endIndex = page * amount;
 
     const query = {};
-
-    if (endIndex < (await model.countDocuments())) {
-      query.next = {
-        page: page + 1,
-        amount: amount,
-      };
-    }
-
-    if (startIndex > 0) {
-      query.previous = {
-        page: page - 1,
-        amount: amount,
-      };
-    }
 
     switch (sort) {
       case "recent":
@@ -51,43 +38,56 @@ const paginatedResults = (model) => {
       case "pending":
         queryFilter = { collected: false };
         break;
-      case "available":
-        queryFilter = { sold: false };
-        break;
       default:
         queryFilter = {};
     }
 
+    if (endIndex < (await model.countDocuments(queryFilter))) {
+      query.next = {
+        page: page + 1,
+        amount: amount,
+      };
+    }
+
+    if (startIndex > 0) {
+      query.previous = {
+        page: page - 1,
+        amount: amount,
+      };
+    }
+
+    query.totalPages = Math.ceil(
+      (await model.countDocuments(queryFilter)) / amount
+    );
+
     try {
       if (model === ItemModel) {
         query.results = await model
-          .find(queryFilter, itemAttr)
+          // Displays only available items
+          .find({ sold: false }, itemAttr)
           .limit(amount)
           .skip(startIndex)
           .sort(querySort);
       } else if (model === OrderModel && req.session.user.role !== "customer") {
         query.results = await model
-          .find(queryFilter, ["collected", "items", "user"])
-          .populate("items", itemAttr)
-          .populate("user", "name")
+          .find(queryFilter, [...orderAttr, "user"])
           .limit(amount)
           .skip(startIndex)
-          .sort(querySort);
+          .sort(querySort)
+          .populate("user", "name")
+          .populate("items", itemAttr);
       } else if (model === OrderModel && req.session.user.role === "customer") {
         query.results = await model
-          .find({ ...queryFilter, user: req.session.user._id }, [
-            "collected",
-            "items",
-          ])
-          .populate("items", itemAttr)
+          .find({ ...queryFilter, user: req.session.user._id }, orderAttr)
           .limit(amount)
           .skip(startIndex)
-          .sort(querySort);
+          .sort(querySort)
+          .populate("items", itemAttr);
       }
       res.paginatedResults = query;
       next();
     } catch (err) {
-      res.status(400).send({ error: error.message });
+      res.status(400).send({ error: err.message });
     }
   };
 };

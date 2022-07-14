@@ -14,6 +14,7 @@ const itemSchema = new mongoose.Schema(
     image: {
       type: String,
       required: true,
+      default: "N/A"
     },
     imageId: String,
     sold: {

@@ -38,9 +38,6 @@ const paginatedResults = (model) => {
       case "pending":
         queryFilter = { collected: false };
         break;
-      case "available":
-        queryFilter = { sold: false };
-        break;
       default:
         queryFilter = {};
     }
@@ -66,7 +63,8 @@ const paginatedResults = (model) => {
     try {
       if (model === ItemModel) {
         query.results = await model
-          .find(queryFilter, itemAttr)
+          // Displays only available items
+          .find({ sold: false }, itemAttr)
           .limit(amount)
           .skip(startIndex)
           .sort(querySort);

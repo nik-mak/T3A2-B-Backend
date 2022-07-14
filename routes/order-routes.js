@@ -12,12 +12,18 @@ const pagination = require("../middleware/pagination");
 // Customer access only
 router.post("/add", customerAuth, async (req, res) => {
   try {
-    const user = await UserModel.findById(req.session.user._id);
+    const user = await UserModel.findById(req.session.user._id).populate(
+      "cart"
+    );
     const items = user.cart;
+    let totalPrice = 0;
+    items.forEach((item) => (totalPrice += item.price));
+
     // Create new order with all items currently in user's cart
     await OrderModel.create({
       user: user._id,
       items: items,
+      totalPrice: totalPrice,
     });
     // Remove items from user's cart
     await UserModel.updateOne(user, { $pullAll: { cart: items } });

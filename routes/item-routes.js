@@ -67,7 +67,7 @@ router.delete("/:id", async (req, res) => {
     });
 
     await ItemModel.deleteOne(item);
-    res.sendStatus(204);
+    res.status(204).send("Item deleted successfully!");
   } catch (err) {
     res.status(400).send({ error: err.message });
   }

@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "test": "jest --watchAll",
+    "test": "jest",
     "test-cc": "jest --coverage",
     "test-script": "jest tests/ --forceExit"
   },
@@ -30,5 +30,11 @@
     "jest": "^28.1.2",
     "nodemon": "^2.0.19",
     "supertest": "^6.2.4"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "coveragePathIgnorePatterns": [
+      "/node_modules/"
+    ]
   }
 }

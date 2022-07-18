@@ -3,20 +3,52 @@ const OrderModel = require("../models/order");
 
 const paginatedResults = (model) => {
   return async (req, res, next) => {
+    // current page user is at
     const page = parseInt(req.body.page);
+    // how many items/orders to be displayed per page
     const amount = parseInt(req.body.amount);
+    // what type of sort has been requested
     const sort = req.body.sort;
+    // what type of filter has been requested
     const filter = req.body.filter;
+
     let querySort = {};
     let queryFilter = {};
+    const query = {};
+
     const itemAttr = ["name", "price", "size", "image"];
     let orderAttr = ["collected", "items", "totalPrice", "createdAt"];
 
+    // defining index of the first item on the current page (zero indexed)
+    // required to know how many items to skip when querying for a new page `.skip()`
     const startIndex = (page - 1) * amount;
+    // defining index of the last item of the current page
     const endIndex = page * amount;
 
-    const query = {};
+    // defining which is the previous page from the current one
+    // only defined if user is not on the page 1
+    if (startIndex > 0) {
+      query.previous = {
+        page: page - 1,
+        amount: amount,
+      };
+    }
 
+    // defining which is the next page from the current one
+    // only defined if user is not on the last page
+    if (endIndex < (await model.countDocuments(queryFilter))) {
+      query.next = {
+        page: page + 1,
+        amount: amount,
+      };
+    }
+
+    // defining the total number of pages that can be displayed
+    query.totalPages = Math.ceil(
+      (await model.countDocuments(queryFilter)) / amount
+    );
+
+    // defining parameters for .sort() based on the req.sort
     switch (sort) {
       case "recent":
         querySort = { _id: -1 };
@@ -31,6 +63,7 @@ const paginatedResults = (model) => {
         querySort = { _id: -1 };
     }
 
+    // defining parameters for .filter() based on the req.filter
     switch (filter) {
       case "collected":
         queryFilter = { collected: true };
@@ -41,24 +74,6 @@ const paginatedResults = (model) => {
       default:
         queryFilter = {};
     }
-
-    if (endIndex < (await model.countDocuments(queryFilter))) {
-      query.next = {
-        page: page + 1,
-        amount: amount,
-      };
-    }
-
-    if (startIndex > 0) {
-      query.previous = {
-        page: page - 1,
-        amount: amount,
-      };
-    }
-
-    query.totalPages = Math.ceil(
-      (await model.countDocuments(queryFilter)) / amount
-    );
 
     try {
       if (model === ItemModel) {
@@ -84,6 +99,7 @@ const paginatedResults = (model) => {
           .sort(querySort)
           .populate("items", itemAttr);
       }
+      // response includes next page, previous page, total of pages and results of the db query 
       res.paginatedResults = query;
       next();
     } catch (err) {

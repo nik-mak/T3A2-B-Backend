@@ -1,23 +1,22 @@
 const express = require("express");
 const router = express.Router();
-const UserModel = require("../models/user");
+
 const OrderModel = require("../models/order");
-const ItemModel = require("../models/item");
 
 const customerAuth = require("../middleware/customer-auth");
 const storeAuth = require("../middleware/store-auth");
 const pagination = require("../middleware/pagination");
+const cartItems = require("../middleware/cartItems")
+
+const clearCart = require("../utils/clearCart")
+const itemSold = require("../utils/itemSold")
 
 // Create new order from cart
 // Customer access only
-router.post("/add", customerAuth, async (req, res) => {
+router.post("/add", customerAuth, cartItems, async (req, res) => {
   try {
-    const user = await UserModel.findById(req.session.user._id).populate(
-      "cart"
-    );
-    const items = user.cart;
-    let totalPrice = 0;
-    items.forEach((item) => (totalPrice += item.price));
+    // Destructuring response from cartItems middleware
+    const { user, items, totalPrice } = res.populatedCart
 
     // Create new order with all items currently in user's cart
     await OrderModel.create({
@@ -25,10 +24,13 @@ router.post("/add", customerAuth, async (req, res) => {
       items: items,
       totalPrice: totalPrice,
     });
-    // Remove items from user's cart
-    await UserModel.updateOne(user, { $pullAll: { cart: items } });
-    // Change items' status to sold
-    await ItemModel.updateMany({ _id: { $in: items } }, { sold: true });
+
+    // Remove order items from user's cart
+    clearCart(user, items)
+
+    // Change order items' status to sold
+    itemSold(items)
+
     res.status(201).send("Order created successfully!");
   } catch (err) {
     res.status(400).send({ error: err.message });

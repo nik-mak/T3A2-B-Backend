@@ -4,6 +4,7 @@ const ItemModel = require("../models/item");
 const upload = require("../middleware/multer");
 const cloudinary = require("cloudinary").v2;
 
+// returns an individual item by its id
 router.get("/:id", async (req, res) => {
   try {
     await ItemModel.findById(req.params.id);
@@ -15,6 +16,7 @@ router.get("/:id", async (req, res) => {
   }
 });
 
+// adds a new item to catalogue
 router.post("/add", upload.single("image"), async (req, res) => {
   try {
     const imageUploaded = await cloudinary.uploader.upload(req.file.path);
@@ -33,9 +35,11 @@ router.post("/add", upload.single("image"), async (req, res) => {
   }
 });
 
+// update an individual item
 router.put("/:id", upload.single("image"), async (req, res) => {
   try {
     const item = await ItemModel.findById(req.params.id);
+    // only updates item image if a new file has been sent
     if (req.file) {
       const imageUploaded = await cloudinary.uploader.upload(req.file.path);
       await ItemModel.updateOne(
@@ -63,6 +67,8 @@ router.put("/:id", upload.single("image"), async (req, res) => {
   }
 });
 
+// deletes an item from the catalogue and
+// removes its image from cloudinary
 router.delete("/:id", async (req, res) => {
   try {
     const item = await ItemModel.findById(req.params.id);

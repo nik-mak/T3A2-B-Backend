@@ -36,23 +36,23 @@ router.post("/add", upload.single("image"), async (req, res) => {
 router.put("/:id", upload.single("image"), async (req, res) => {
   try {
     const item = await ItemModel.findById(req.params.id);
-    const imageUploaded = await cloudinary.uploader.upload(req.file.path);
-
-    await ItemModel.updateOne(
+    if (req.file) {
+      const imageUploaded = await cloudinary.uploader.upload(req.file.path);
+      await ItemModel.updateOne(
       item,
-      {
-        name: req.body.name,
-        price: req.body.price,
-        size: req.body.size,
+        {
         image: imageUploaded.secure_url,
-        imageId: imageUploaded.public_id,
-        sold: req.body.sold,
-      },
+        imageId: imageUploaded.public_id
+      }
+      )
+    }
+    await ItemModel.updateOne(
+      item, req.body,
       {
         returnDocument: "after",
       }
     );
-    res.sendStatus(201);
+    res.status(201).send("Item successfully updated");
   } catch (err) {
     res.status(400).send({ error: err.message });
   }

@@ -10,7 +10,7 @@ const verifyToken = (req, res, next) => {
       return res.status(401).send("Invalid Token");
     }
   } else {
-    res.status(401).send("Need to be logged in");
+    res.status(401).send("Please log in to proceed.");
   }
 };
 

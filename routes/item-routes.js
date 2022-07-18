@@ -10,7 +10,7 @@ router.get("/:id", async (req, res) => {
     res.status(200).send(item);
   } catch (err) {
     res
-      .status(400)
+      .status(404)
       .send({ error: `Enable to find item with id ${req.params.id}` });
   }
 });
@@ -39,20 +39,25 @@ router.put("/:id", upload.single("image"), async (req, res) => {
     if (req.file) {
       const imageUploaded = await cloudinary.uploader.upload(req.file.path);
       await ItemModel.updateOne(
-      item,
+        item,
         {
-        image: imageUploaded.secure_url,
-        imageId: imageUploaded.public_id
-      }
-      )
-    }
-    await ItemModel.updateOne(
-      item, req.body,
-      {
+          name: req.body.name,
+          price: req.body.price,
+          size: req.body.size,
+          image: imageUploaded.secure_url,
+          imageId: imageUploaded.public_id,
+          sold: req.body.sold,
+        },
+        {
+          returnDocument: "after",
+        }
+      );
+    } else {
+      await ItemModel.updateOne(item, req.body, {
         returnDocument: "after",
-      }
-    );
-    res.status(201).send("Item successfully updated");
+      });
+    }
+    res.status(201).send("Item updated successfully!");
   } catch (err) {
     res.status(400).send({ error: err.message });
   }

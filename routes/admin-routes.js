@@ -26,7 +26,7 @@ router.post("/register/staff", async (req, res) => {
     const existingUser = await UserModel.findOne({ email });
 
     if (existingUser) {
-      return res.status(409).send("User Already Exist. Please Login");
+      return res.status(409).send("User Already Exists. Please Login");
     }
 
     // Encrypt password

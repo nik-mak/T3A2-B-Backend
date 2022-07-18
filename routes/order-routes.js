@@ -29,7 +29,7 @@ router.post("/add", customerAuth, async (req, res) => {
     await UserModel.updateOne(user, { $pullAll: { cart: items } });
     // Change items' status to sold
     await ItemModel.updateMany({ _id: { $in: items } }, { sold: true });
-    res.status(201).send("Order created!");
+    res.status(201).send("Order created successfully!");
   } catch (err) {
     res.status(400).send({ error: err.message });
   }

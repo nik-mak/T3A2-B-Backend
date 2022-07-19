@@ -4,16 +4,18 @@ const itemSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: true,
+      required: [true, "Name of the item is required."],
+      minLength: [3, "Minimum length is 3."]
     },
     price: {
       type: Number,
-      required: true,
+      min: [1, "Minimum price is $1."],
+      required: [true, "Price of the item is required."]
     },
     size: String,
     image: {
       type: String,
-      required: true,
+      required: [true, "Image of the item is required."],
       default: "N/A"
     },
     imageId: String,

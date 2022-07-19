@@ -43,10 +43,20 @@ const paginatedResults = (model) => {
       };
     }
 
-    // defining the total number of pages that can be displayed
-    query.totalPages = Math.ceil(
-      (await model.countDocuments(queryFilter)) / amount
-    );
+    // defining the total number of pages available for the query received
+    // store members should see all orders but customers can only see theirs
+    if (model === OrderModel && req.session.user.role === "customer") {
+      query.totalPages = Math.ceil(
+        (await model.countDocuments({
+          ...queryFilter,
+          user: req.session.user._id,
+        })) / amount
+      );
+    } else {
+      query.totalPages = Math.ceil(
+        (await model.countDocuments(queryFilter)) / amount
+      );
+    }
 
     // defining parameters for .sort() based on the req.sort
     switch (sort) {

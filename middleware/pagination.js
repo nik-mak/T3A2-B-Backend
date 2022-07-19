@@ -3,7 +3,7 @@ const OrderModel = require("../models/order");
 
 const paginatedResults = (model) => {
   return async (req, res, next) => {
-    // current page user is at
+    // page requested by user
     const page = parseInt(req.body.page);
     // how many items/orders to be displayed per page
     const amount = parseInt(req.body.amount);
@@ -19,13 +19,13 @@ const paginatedResults = (model) => {
     const itemAttr = ["name", "price", "size", "image"];
     let orderAttr = ["collected", "items", "totalPrice", "createdAt"];
 
-    // defining index of the first item on the current page (zero indexed)
-    // required to know how many items to skip when querying for a new page `.skip()`
+    // identifying index of the first item on requested page (zero indexed)
+    // determines how many items to skip when querying for a new page `.skip()`
     const startIndex = (page - 1) * amount;
-    // defining index of the last item of the current page
+    // defining index of the last item of the requested page
     const endIndex = page * amount;
 
-    // defining which is the previous page from the current one
+    // defining which is the previous page for the requested page
     // only defined if user is not on the page 1
     if (startIndex > 0) {
       query.previous = {
@@ -34,7 +34,7 @@ const paginatedResults = (model) => {
       };
     }
 
-    // defining which is the next page from the current one
+    // defining which is the next page for the requested page
     // only defined if user is not on the last page
     if (endIndex < (await model.countDocuments(queryFilter))) {
       query.next = {
@@ -99,7 +99,7 @@ const paginatedResults = (model) => {
           .sort(querySort)
           .populate("items", itemAttr);
       }
-      // response includes next page, previous page, total of pages and results of the db query 
+      // response includes next page, previous page, total of pages and results of the db query
       res.paginatedResults = query;
       next();
     } catch (err) {

@@ -53,11 +53,13 @@ router.put("/:id", upload.single("image"), async (req, res) => {
           sold: req.body.sold,
         },
         {
+          runValidators: true,
           returnDocument: "after",
         }
       );
     } else {
       await ItemModel.updateOne(item, req.body, {
+        runValidators: true,
         returnDocument: "after",
       });
     }

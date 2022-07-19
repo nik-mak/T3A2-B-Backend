@@ -18,8 +18,10 @@ router.post("/register", async (req, res) => {
       return res.status(400).send("All input is required");
     }
 
+    const lowerCaseEmail = email.toLowerCase()
+    
     // Check if user already exist in our database
-    const existingUser = await UserModel.findOne({ email });
+    const existingUser = await UserModel.findOne({ lowerCaseEmail });
 
     if (existingUser) {
       return res.status(409).send("User Already Exists. Please Login");
@@ -31,7 +33,7 @@ router.post("/register", async (req, res) => {
     // Create user in the database
     const user = await UserModel.create({
       name: name,
-      email: email.toLowerCase(),
+      email: lowerCaseEmail,
       password: encryptedPassword,
     });
 
@@ -40,7 +42,7 @@ router.post("/register", async (req, res) => {
 
     // Create token
     const token = jwt.sign(
-      { user_id: user._id, email },
+      { user_id: user._id, lowerCaseEmail },
       process.env.TOKEN_KEY,
       {
         expiresIn: "2h",
@@ -72,8 +74,11 @@ router.post("/login", async (req, res) => {
     if (!(email && password)) {
       return res.status(400).send("All input is required");
     }
+
+    const lowerCaseEmail = email.toLowerCase()
+
     // Validate if user exist in our database
-    const user = await UserModel.findOne({ email });
+    const user = await UserModel.findOne({ lowerCaseEmail });
 
     if (user && (await bcrypt.compare(password, user.password))) {
       // Create cookie with user details
@@ -81,7 +86,7 @@ router.post("/login", async (req, res) => {
 
       // Create token
       const token = jwt.sign(
-        { user_id: user._id, email },
+        { user_id: user._id, lowerCaseEmail },
         process.env.TOKEN_KEY,
         {
           expiresIn: "2h",

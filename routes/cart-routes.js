@@ -12,6 +12,8 @@ router.put("/:id", async (req, res) => {
     // Verify if item is already in the cart before adding it
     if (user.cart.includes(item._id)) {
       throw "Item is already in the cart!";
+    } else if (item.sold === true) {
+      throw "Item is no longer available!";
     } else {
       await UserModel.updateOne(user, { $push: { cart: item._id } });
     }

@@ -19,45 +19,6 @@ const paginatedResults = (model) => {
     const itemAttr = ["name", "price", "size", "image"];
     let orderAttr = ["collected", "items", "totalPrice", "createdAt"];
 
-    // identifying index of the first item on requested page (zero indexed)
-    // determines how many items to skip when querying for a new page `.skip()`
-    const startIndex = (page - 1) * amount;
-    // defining index of the last item of the requested page
-    const endIndex = page * amount;
-
-    // defining which is the previous page for the requested page
-    // only defined if user is not on the page 1
-    if (startIndex > 0) {
-      query.previous = {
-        page: page - 1,
-        amount: amount,
-      };
-    }
-
-    // defining which is the next page for the requested page
-    // only defined if user is not on the last page
-    if (endIndex < (await model.countDocuments(queryFilter))) {
-      query.next = {
-        page: page + 1,
-        amount: amount,
-      };
-    }
-
-    // defining the total number of pages available for the query received
-    // store members should see all orders but customers can only see theirs
-    if (model === OrderModel && req.session.user.role === "customer") {
-      query.totalPages = Math.ceil(
-        (await model.countDocuments({
-          ...queryFilter,
-          user: req.session.user._id,
-        })) / amount
-      );
-    } else {
-      query.totalPages = Math.ceil(
-        (await model.countDocuments(queryFilter)) / amount
-      );
-    }
-
     // defining parameters for .sort() based on the req.sort
     switch (sort) {
       case "recent":
@@ -83,6 +44,46 @@ const paginatedResults = (model) => {
         break;
       default:
         queryFilter = {};
+    }
+
+    // identifying index of the first item on requested page (zero indexed)
+    // determines how many items to skip when querying for a new page `.skip()`
+    const startIndex = (page - 1) * amount;
+    // defining index of the last item of the requested page
+    const endIndex = page * amount;
+
+    // identifying the total number of documents to be displayed
+    // for the request received
+    let numberOfDocs;
+    // store members should see all orders but customers can only see theirs
+    if (model === OrderModel && req.session.user.role === "customer") {
+      numberOfDocs = await model.countDocuments({
+        ...queryFilter,
+        user: req.session.user._id,
+      });
+    } else {
+      numberOfDocs = await model.countDocuments(queryFilter);
+    }
+
+    // defining the total number of pages for the query received
+    query.totalPages = Math.ceil(numberOfDocs / amount);
+
+    // defining which is the previous page for the requested page
+    // only defined if user is not on the page 1
+    if (startIndex > 0) {
+      query.previous = {
+        page: page - 1,
+        amount: amount,
+      };
+    }
+
+    // defining which is the next page for the requested page
+    // only defined if user is not on the last page
+    if (endIndex < numberOfDocs) {
+      query.next = {
+        page: page + 1,
+        amount: amount,
+      };
     }
 
     try {

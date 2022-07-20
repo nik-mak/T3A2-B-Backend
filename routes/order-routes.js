@@ -6,10 +6,10 @@ const OrderModel = require("../models/order");
 const customerAuth = require("../middleware/customer-auth");
 const storeAuth = require("../middleware/store-auth");
 const pagination = require("../middleware/pagination");
-const cartItems = require("../middleware/cartItems")
+const cartItems = require("../middleware/cart-items")
 
-const clearCart = require("../utils/clearCart")
-const itemSold = require("../utils/itemSold")
+const clearCart = require("../utils/clear-cart")
+const itemSold = require("../utils/item-sold")
 
 // Create new order from cart
 // Customer access only

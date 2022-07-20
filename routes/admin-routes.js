@@ -18,7 +18,7 @@ router.post("/register/staff", async (req, res) => {
     const { name, email, password } = req.body;
 
     // Validate user input
-    if (!(name, email, password)) {
+    if (!(name && email && password)) {
       return res.status(400).send("All input is required");
     }
 

@@ -18,10 +18,10 @@ router.post("/register", async (req, res) => {
       return res.status(400).send("All input is required");
     }
 
-    const lowerCaseEmail = email.toLowerCase()
-    
+    const lowerCaseEmail = email.toLowerCase();
+
     // Check if user already exist in our database
-    const existingUser = await UserModel.findOne({ lowerCaseEmail });
+    const existingUser = await UserModel.findOne({ email: lowerCaseEmail });
 
     if (existingUser) {
       return res.status(409).send("User Already Exists. Please Login");
@@ -75,10 +75,11 @@ router.post("/login", async (req, res) => {
       return res.status(400).send("All input is required");
     }
 
-    const lowerCaseEmail = email.toLowerCase()
-
+    const lowerCaseEmail = email.toLowerCase();
+    console.log(lowerCaseEmail);
     // Validate if user exist in our database
-    const user = await UserModel.findOne({ lowerCaseEmail });
+    const user = await UserModel.findOne({ email: lowerCaseEmail });
+    console.log(user);
 
     if (user && (await bcrypt.compare(password, user.password))) {
       // Create cookie with user details

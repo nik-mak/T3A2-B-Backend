@@ -24,6 +24,7 @@ const sessionConfig = {
     maxAge: 1000 * 60 * 60, // time span of cookie in ms
     secure: true, // set to true in production for HTTPS only access
     sameSite: "none",
+    httpOnly: false
   },
   resave: false,
   saveUninitialized: false, // set to false in production, user has to give consent

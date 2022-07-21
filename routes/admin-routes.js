@@ -50,7 +50,7 @@ router.post("/register/staff", async (req, res) => {
       role: user.role,
     });
   } catch (error) {
-    res.status(400).send(error.message);
+    res.status(400).send(errorFormatter(error.message));
   }
 });
 

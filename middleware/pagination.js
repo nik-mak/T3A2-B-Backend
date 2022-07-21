@@ -113,8 +113,8 @@ const paginatedResults = (model) => {
       // response includes next page, previous page, total of pages and results of the db query
       res.paginatedResults = query;
       next();
-    } catch (err) {
-      res.status(400).send(err.message);
+    } catch (error) {
+      res.status(400).send(error.message);
     }
   };
 };

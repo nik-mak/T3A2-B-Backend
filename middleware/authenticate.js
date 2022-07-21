@@ -1,7 +1,6 @@
 const jwt = require("jsonwebtoken");
 
 const verifyToken = (req, res, next) => {
-  console.log(req)
   if (req.session && req.session.user && req.session.token) {
     try {
       const decoded = jwt.verify(req.session.token, process.env.TOKEN_KEY);

@@ -19,7 +19,7 @@ router.put("/:id", async (req, res) => {
     }
     res.status(201).send(item);
   } catch (error) {
-    res.status(400).send({ error });
+    res.status(400).send(error);
   }
 });
 
@@ -30,8 +30,8 @@ router.get("/", async (req, res) => {
       "cart"
     );
     res.status(200).send(user.cart);
-  } catch (err) {
-    res.status(400).send(err.message);
+  } catch (error) {
+    res.status(400).send(error.message);
   }
 });
 
@@ -43,8 +43,8 @@ router.delete("/:id", async (req, res) => {
       $pull: { cart: item._id },
     });
     res.status(200).send("Item removed from cart!");
-  } catch (err) {
-    res.status(400).send({ error: err.message });
+  } catch (error) {
+    res.status(400).send(error.message);
   }
 });
 
@@ -55,8 +55,8 @@ router.delete("/", async (req, res) => {
     const items = user.cart;
     await UserModel.updateOne(user, { $pullAll: { cart: items } });
     res.status(200).send("Your cart is now empty!");
-  } catch (err) {
-    res.status(400).send({ error: err.message });
+  } catch (error) {
+    res.status(400).send(error.message);
   }
 });
 

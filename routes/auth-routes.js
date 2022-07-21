@@ -104,6 +104,7 @@ router.post("/login", async (req, res) => {
         role: user.role,
       });
     }
+    console.log(req.session)
     return res.status(400).send("Invalid Credentials");
   } catch (err) {
     res.send(400).send(err.message);

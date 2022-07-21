@@ -1,4 +1,5 @@
 const admin = (req, res, next) => {
+  console.log(req)
   if (req.session.user.role == "admin") {
     next();
   } else {

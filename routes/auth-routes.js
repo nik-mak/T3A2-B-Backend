@@ -4,6 +4,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const UserModel = require("../models/user");
 const router = express.Router();
+const errorFormatter = require("../utils/error-format")
 
 router.use(express.json());
 
@@ -59,8 +60,8 @@ router.post("/register", async (req, res) => {
       email: user.email,
       role: user.role,
     });
-  } catch (err) {
-    res.status(400).send({ error: err.message });
+  } catch (error) {
+    res.status(400).send(errorFormatter(error.message));
   }
 });
 
@@ -105,7 +106,7 @@ router.post("/login", async (req, res) => {
     }
     return res.status(400).send("Invalid Credentials");
   } catch (err) {
-    res.send(400).send({ error: err.message });
+    res.send(400).send(err.message);
   }
 });
 

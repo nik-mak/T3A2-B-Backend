@@ -25,8 +25,8 @@ const sessionConfig = {
     secure: true, // set to true in production for HTTPS only access
     httpOnly: true, // doesn't allow access from js in browser
   },
-  resave: false,
-  saveUninitialized: false, // set to false in production, user has to give consent
+  resave: true,
+  saveUninitialized: true, // set to false in production, user has to give consent
   store: MongoStore.create({
     mongoUrl: process.env.MONGO_STORE_URI,
     autoRemove: "interval",

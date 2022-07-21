@@ -19,6 +19,7 @@ router.get("/:id", async (req, res) => {
 // adds a new item to catalogue
 router.post("/add", upload.single("image"), async (req, res) => {
   try {
+    if (!req.file) throw "Image not uploaded successfully!"
     const imageUploaded = await cloudinary.uploader.upload(req.file.path);
 
     const item = await ItemModel.create({
@@ -30,8 +31,8 @@ router.post("/add", upload.single("image"), async (req, res) => {
       sold: req.body.sold,
     });
     res.status(201).send(item);
-  } catch (err) {
-    res.status(400).send({ error: err.message });
+  } catch (error) {
+    res.status(400).send({ error });
   }
 });
 
@@ -64,8 +65,8 @@ router.put("/:id", upload.single("image"), async (req, res) => {
       });
     }
     res.status(201).send("Item updated successfully!");
-  } catch (err) {
-    res.status(400).send({ error: err.message });
+  } catch (error) {
+    res.status(400).send( error);
   }
 });
 

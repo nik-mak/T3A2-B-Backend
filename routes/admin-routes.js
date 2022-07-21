@@ -9,7 +9,9 @@ router.get("/all/staff", async (req, res) => {
     const staff = await UserModel.find({ role: "staff" });
     const admin = await UserModel.find({ role: "admin" });
     res.status(200).send([...staff, ...admin]);
-  } catch (err) {}
+  } catch (err) {
+    res.status(400).send({ error: err.message });
+  }
 });
 
 // Admin creates account for new staff

@@ -9,16 +9,16 @@ const UserModel = mongoose.model(
       type: String,
       required: [
         true,
-        "Failed to create/update User: Name of user is required.",
+        "Failed to create/update User - Name of user is required.",
       ],
       minlength: [
         3,
-        "Failed to create/update User: Minimum length for user's name is 3 characters.",
+        "Failed to create/update User - Minimum length for user's name is 3 characters.",
       ],
     },
     email: {
       type: String,
-      required: [true, "Failed to create/update User: Email is required."],
+      required: [true, "Failed to create/update User - Email is required."],
       unique: true,
       trim: true,
       validate: {

@@ -9,7 +9,7 @@ app.use(express.json());
 
 app.use(
   cors({
-    origin: "https://www.desperate-housewares.com/",
+    origin: "https://www.desperate-housewares.com",
     credentials: true,
   })
 );

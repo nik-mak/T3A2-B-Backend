@@ -106,7 +106,7 @@ router.post("/login", async (req, res) => {
     }
     return res.status(400).send("Invalid Credentials");
   } catch (error) {
-    res.status(400).send(error.message);
+    res.send(400).send(error.message);
   }
 });
 

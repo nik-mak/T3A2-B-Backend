@@ -7,8 +7,8 @@ const pagination = require("../middleware/pagination");
 router.post("/", pagination(ItemModel),(req, res) => {
   try {
     res.send(res.paginatedResults);
-  } catch (err) {
-    res.status(502).send(err.message);
+  } catch (error) {
+    res.status(502).send(error.message);
   }
 });
 

@@ -4,19 +4,31 @@ const itemSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: [true, "Name of the item is required."],
-      minLength: [3, "Minimum length is 3."]
+      required: [
+        true,
+        "Failed to create/update Item: Name of the item is required.",
+      ],
+      minLength: [
+        3,
+        "Failed to create/update Item: Minimum length for item name is 3 characters.",
+      ],
     },
     price: {
       type: Number,
-      min: [1, "Minimum price is $1."],
-      required: [true, "Price of the item is required."]
+      min: [1, "Failed to create/update Item: Minimum item price is $1."],
+      required: [
+        true,
+        "Failed to create/update Item: Price of the item is required.",
+      ],
     },
     size: String,
     image: {
       type: String,
-      required: [true, "Image of the item is required."],
-      default: "N/A"
+      required: [
+        true,
+        "Failed to create/update Item: Image of the item is required.",
+      ],
+      default: "N/A",
     },
     imageId: String,
     sold: {

@@ -22,9 +22,12 @@ const sessionConfig = {
   secret: process.env.COOKIE_SECRET, // secret that makes the cookie effective
   cookie: {
     maxAge: 1000 * 60 * 60, // time span of cookie in ms
+    secure: true, // set to true in production for HTTPS only access
+    httpOnly: true, // doesn't allow access from js in browser
+    sameSite: "None",
   },
   resave: false,
-  saveUninitialized: true, // set to false in production, user has to give consent
+  saveUninitialized: false, // set to false in production, user has to give consent
   store: MongoStore.create({
     mongoUrl: process.env.MONGO_STORE_URI,
     autoRemove: "interval",
@@ -36,8 +39,8 @@ router.use(session(sessionConfig));
 
 router.use("/auth", authRoutes);
 router.use("/catalogue", catalogueRoutes);
-router.use("/items", auth, storeAuth,itemRoutes);
-router.use("/cart", auth, customerAuth,cartRoutes);
+router.use("/items", auth, storeAuth, itemRoutes);
+router.use("/cart", auth, customerAuth, cartRoutes);
 router.use("/order", auth, orderRoutes);
 router.use("/user", auth, userRoutes);
 router.use("/admin", adminAuth, adminRoutes);

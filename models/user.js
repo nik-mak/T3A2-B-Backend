@@ -15,7 +15,10 @@ const UserModel = mongoose.model(
       required: [true, "User email is required."],
       unique: true,
       trim: true,
-      validate: [validateEmail, "Email format is not valid."],
+      validate: {
+        validator: validateEmail,
+        message: "Email format is not valid."
+      },
       match: [
         /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
         "Email format is not valid.",

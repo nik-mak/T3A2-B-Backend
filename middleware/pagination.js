@@ -114,7 +114,7 @@ const paginatedResults = (model) => {
       res.paginatedResults = query;
       next();
     } catch (err) {
-      res.status(400).send({ error: err.message });
+      res.status(400).send(err.message);
     }
   };
 };

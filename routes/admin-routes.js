@@ -10,7 +10,7 @@ router.get("/all/staff", async (req, res) => {
     const admin = await UserModel.find({ role: "admin" });
     res.status(200).send([...staff, ...admin]);
   } catch (err) {
-    res.status(400).send({ error: err.message });
+    res.status(400).send(err.message);
   }
 });
 
@@ -50,7 +50,7 @@ router.post("/register/staff", async (req, res) => {
       role: user.role,
     });
   } catch (err) {
-    res.status(400).send({ error: err.message });
+    res.status(400).send(err.message);
   }
 });
 
@@ -70,7 +70,7 @@ router.delete("/:id", async (req, res) => {
 
     res.sendStatus(204);
   } catch (err) {
-    res.status(400).send({ error: err.message });
+    res.status(400).send(err.message);
   }
 });
 

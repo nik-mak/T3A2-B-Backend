@@ -20,11 +20,12 @@ const storeAuth = require("../middleware/store-auth");
 const sessionConfig = {
   name: "UID", // name of cookie
   secret: process.env.COOKIE_SECRET, // secret that makes the cookie effective
+  proxy: true,
   cookie: {
     maxAge: 1000 * 60 * 60, // time span of cookie in ms
     secure: true, // set to true in production for HTTPS only access
     sameSite: "none",
-    httpOnly: false
+    httpOnly: true
   },
   resave: false,
   saveUninitialized: false, // set to false in production, user has to give consent

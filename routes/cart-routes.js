@@ -31,7 +31,7 @@ router.get("/", async (req, res) => {
     );
     res.status(200).send(user.cart);
   } catch (err) {
-    res.status(400).send({ error: err.message });
+    res.status(400).send(err.message);
   }
 });
 

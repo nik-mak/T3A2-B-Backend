@@ -1,8 +1,7 @@
 const mongoose = require("mongoose");
-const config = require("config")
 
 mongoose
-  .connect(config.ATLAS_DB_URL)
+  .connect(process.env.ATLAS_DB_URL)
   .then(() =>
     console.log(
       mongoose.connection.readyState == 1

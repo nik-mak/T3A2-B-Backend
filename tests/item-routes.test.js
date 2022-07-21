@@ -1,27 +1,45 @@
 const app = require("../app");
 const mongoose = require("mongoose");
-const session = require("supertest-session")
+const session = require("supertest-session");
+const ItemModel = require("../models/item");
 
-let testSession = null
-let authenticatedSession = null
+let testSession = null;
+let authenticatedSession = null;
 
-beforeAll(() => {
-  testSession = session(app)
-})
+// Clearing the items in the DB
+beforeAll((done) => {
+  ItemModel.deleteMany({}, (err) => {
+    if (err) return done(err);
+    return done();
+  });
+});
 
 beforeAll((done) => {
+  testSession = session(app);
+  // creating a mock user for the tests
+  testSession
+    .post("/api/v1/auth/register")
+    .send({
+      name: "Admin user",
+      email: "user01@gmail.com",
+      password: "password123",
+    })
+    .end(done);
+
   testSession
     .post("/api/v1/auth/login")
     .send({ email: "user01@gmail.com", password: "password123" })
     .expect(200)
     .end((err) => {
-      if (err) return done(err)
-      authenticatedSession = testSession
-      return done()
-    })
-})
+      if (err) return done(err);
+      authenticatedSession = testSession;
+      return done();
+    });
+});
 
 afterAll(() => mongoose.connection.close());
+
+jest.setTimeout(10000);
 
 describe("Items routes", () => {
   test("Raise error if cannot find individual item from the catalogue", (done) => {
@@ -29,38 +47,70 @@ describe("Items routes", () => {
       .get("/api/v1/items/1234567")
       .expect(404, { error: "Enable to find item with id 1234567" })
       .expect("Content-Type", /json/)
-      .end(done)
+      .end(function (err, res) {
+        if (err) return done(err);
+        return done();
+      });
   });
-  test("Raise error if cannot find individual item from the catalogue", (done) => {
+  test("Add new item to catalogue with image uploaded to Cloudinary", (done) => {
     authenticatedSession
-      .get("/api/v1/items/1234567")
-      .expect(404, { error: "Enable to find item with id 1234567" })
-      .expect("Content-Type", /json/)
-      .end(done);
+      .post("/api/v1/items/add")
+      .set("Content-Type", "multipart/form-data")
+      .field("name", "Blue t-shirt")
+      .field("price", 14)
+      .attach("image", "./tests/assets/no-img.png")
+      .expect(201)
+      .end(function (err, res) {
+        if (err) return done(err);
+        ItemModel.findOne({ name: "Blue t-shirt" }, (err, newItem) => {
+          expect(newItem.price).toEqual(14);
+          expect(newItem.name).toEqual("Blue t-shirt");
+        });
+        return done();
+      });
   });
-  // test("Add new item to catalogue", async () => {
-  //     const res = await request(app).post("/api/v1/items").send({
-  //         name: "cool t-shirt",
-  //         price: 12.00,
-  //         image: "https://cloudinary"
-  //     })
-  //     .expect(201)
-  //     .expect("Content-Type", /json/)
-  //     expect(res.body._id).toBeDefined()
-  //     expect(res.body.name).toBe("cool t-shirt")
-  //     expect(res.body.price).toEqual(12.00)
-  //     expect(res.body.image).toBe("https://cloudinary")
-  // })
-  // test("Present error if required fields for new item are not entered or wrong data type", async () => {
-  //     const res = await request(app)
-  //       .post("/api/v1/items")
-  //       .send({
-  //         name: null,
-  //         price: "wrong price",
-  //         image: null,
-  //       })
-  //       .expect(400)
-  //       .expect("Content-Type", /json/)
-  //     expect(res.body._id).not.toBeDefined()
-  // })
+  test("Throw error if image is not uploaded for a new item", (done) => {
+    authenticatedSession
+      .post("/api/v1/items/add")
+      .set("Content-Type", "multipart/form-data")
+      .field("name", "Just another t-shirt")
+      .field("price", 15)
+      .expect(400, { error: "Image not uploaded successfully!" })
+      .end(function (err, res) {
+        if (err) return done(err);
+        return done();
+      });
+  });
+  test("Update an item", (done) => {
+    ItemModel.findOne({ name: "Blue t-shirt" }, (err, item) => {
+      authenticatedSession
+        .put("/api/v1/items/" + item._id)
+        .set("Content-Type", "multipart/form-data")
+        .field("price", 20)
+        .field("sold", true)
+        .end(function (err, res) {
+          if (err) return done(err);
+          ItemModel.findOne({ name: "Blue t-shirt" }, (err, updatedItem) => {
+            expect(updatedItem.price).toBe(20);
+            expect(updatedItem.sold).toEqual(true);
+          });
+          expect(res.status).toBe(201);
+          return done();
+        });
+    });
+  });
+  test("Delete an item", (done) => {
+    ItemModel.findOne({ name: "Blue t-shirt" }, (err, item) => {
+      authenticatedSession
+        .delete("/api/v1/items/" + item._id)
+        .end(function (err, res) {
+          if (err) return done(err);
+          ItemModel.findOne({ name: "Blue t-shirt" }, (err, deletedItem) => {
+            expect(deletedItem).toBeFalsy();
+          });
+          expect(res.status).toBe(204);
+          return done();
+        });
+    });
+  });
 });

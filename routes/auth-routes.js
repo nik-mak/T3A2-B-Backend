@@ -76,10 +76,8 @@ router.post("/login", async (req, res) => {
     }
 
     const lowerCaseEmail = email.toLowerCase();
-    console.log(lowerCaseEmail);
     // Validate if user exist in our database
     const user = await UserModel.findOne({ email: lowerCaseEmail });
-    console.log(user);
 
     if (user && (await bcrypt.compare(password, user.password))) {
       // Create cookie with user details

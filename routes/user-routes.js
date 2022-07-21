@@ -8,7 +8,7 @@ router.get("/:id", async (req, res) => {
   try {
     res.status(200).send(await UserModel.findById(req.session.user._id));
   } catch (error) {
-    res.status(404).send({ error: "Cannot find user" });
+    res.status(404).send("Cannot find user");
   }
 });
 

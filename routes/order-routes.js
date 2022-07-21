@@ -32,8 +32,8 @@ router.post("/add", customerAuth, cartItems, async (req, res) => {
     itemSold(items)
 
     res.status(201).send("Order created successfully!");
-  } catch (err) {
-    res.status(400).send({ error: err.message });
+  } catch (error) {
+    res.status(400).send(error.message);
   }
 });
 
@@ -43,8 +43,8 @@ router.post("/add", customerAuth, cartItems, async (req, res) => {
 router.post("/", customerAuth, pagination(OrderModel), async (req, res) => {
   try {
     res.send(res.paginatedResults);
-  } catch (err) {
-    res.status(400).send({ error: err.message });
+  } catch (error) {
+    res.status(400).send(error.message);
   }
 });
 
@@ -56,8 +56,8 @@ router.use(storeAuth);
 router.patch("/:id", async (req, res) => {
   try {
     await OrderModel.findByIdAndUpdate(req.params.id, { collected: true });
-  } catch (err) {
-    res.status(400).send({ error: err.message });
+  } catch (error) {
+    res.status(400).send(error.message);
   }
 });
 
@@ -65,8 +65,8 @@ router.patch("/:id", async (req, res) => {
 router.post("/store", pagination(OrderModel), async (req, res) => {
   try {
     res.send(res.paginatedResults);
-  } catch (err) {
-    res.status(400).send({ error: err.message });
+  } catch (error) {
+    res.status(400).send(error.message);
   }
 });
 

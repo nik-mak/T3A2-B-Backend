@@ -9,8 +9,8 @@ router.get("/all/staff", async (req, res) => {
     const staff = await UserModel.find({ role: "staff" });
     const admin = await UserModel.find({ role: "admin" });
     res.status(200).send([...staff, ...admin]);
-  } catch (err) {
-    res.status(400).send(err.message);
+  } catch (error) {
+    res.status(400).send(error.message);
   }
 });
 
@@ -49,8 +49,8 @@ router.post("/register/staff", async (req, res) => {
       email: user.email,
       role: user.role,
     });
-  } catch (err) {
-    res.status(400).send(err.message);
+  } catch (error) {
+    res.status(400).send(error.message);
   }
 });
 
@@ -69,8 +69,8 @@ router.delete("/:id", async (req, res) => {
     await UserModel.findByIdAndDelete(req.params.id);
 
     res.sendStatus(204);
-  } catch (err) {
-    res.status(400).send(err.message);
+  } catch (error) {
+    res.status(400).send(error.message);
   }
 });
 

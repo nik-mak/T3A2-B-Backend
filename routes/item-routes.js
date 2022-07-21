@@ -9,10 +9,10 @@ router.get("/:id", async (req, res) => {
   try {
     await ItemModel.findById(req.params.id);
     res.status(200).send(item);
-  } catch (err) {
+  } catch (error) {
     res
       .status(404)
-      .send({ error: `Enable to find item with id ${req.params.id}` });
+      .send(`Enable to find item with id ${req.params.id}`);
   }
 });
 
@@ -32,7 +32,7 @@ router.post("/add", upload.single("image"), async (req, res) => {
     });
     res.status(201).send(item);
   } catch (error) {
-    res.status(400).send({ error });
+    res.status(400).send(error);
   }
 });
 
@@ -66,7 +66,7 @@ router.put("/:id", upload.single("image"), async (req, res) => {
     }
     res.status(201).send("Item updated successfully!");
   } catch (error) {
-    res.status(400).send( error);
+    res.status(400).send(error.message);
   }
 });
 
@@ -82,8 +82,8 @@ router.delete("/:id", async (req, res) => {
 
     await ItemModel.deleteOne(item);
     res.status(204).send("Item deleted successfully!");
-  } catch (err) {
-    res.status(400).send({ error: err.message });
+  } catch (error) {
+    res.status(400).send(error.message);
   }
 });
 

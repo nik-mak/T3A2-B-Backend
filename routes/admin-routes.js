@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcrypt");
 const UserModel = require("../models/user");
+const errorFormatter = require("../utils/error-format")
 
 // Get all staff and admin accounts
 router.get("/all/staff", async (req, res) => {

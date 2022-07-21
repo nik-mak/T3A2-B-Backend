@@ -22,10 +22,8 @@ const sessionConfig = {
   secret: process.env.COOKIE_SECRET, // secret that makes the cookie effective
   cookie: {
     maxAge: 1000 * 60 * 60, // time span of cookie in ms
-    secure: true, // set to true in production for HTTPS only access
-    httpOnly: true, // doesn't allow access from js in browser
   },
-  resave: true,
+  resave: false,
   saveUninitialized: true, // set to false in production, user has to give consent
   store: MongoStore.create({
     mongoUrl: process.env.MONGO_STORE_URI,

@@ -2,6 +2,11 @@ const mongoose = require("../db/connection");
 const { Schema } = mongoose;
 const validateEmail = require("../utils/validate-email");
 
+const validateEmail = (email) => {
+  const regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+  return regex.test(email);
+};
+
 const UserModel = mongoose.model(
   "User",
   new mongoose.Schema({

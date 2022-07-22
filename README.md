@@ -26,22 +26,22 @@ Note: If you run into files not found when you have started the server but the c
 ![env-file](./docs/env-file.png)
 
 
-1. Start the server
-2. Run npm test (5 tests should fail)
+2. Start the server
+3. Run npm test (5 tests should fail)
 
 
 ![initial-test](./docs/initial-test.png)
 
 
-1. Go to MongoDB and change Admin user's role to role: "admin"
+4. Go to MongoDB and change Admin user's role to role: "admin"
 
 
 ![update user in db](./docs/update-user-db.png)
 
 
-1. Restart the server
+5. Restart the server
 
-2. Run npm test (11 tests should pass)
+6. Run npm test (11 tests should pass)
 
 
 ![final-test](./docs/final-test.png)

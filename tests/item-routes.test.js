@@ -18,9 +18,9 @@ beforeAll((done) => {
   testSession = session(app);
   // creating a mock user for the tests
   // Admin can only be created at the DB
-  // So run test first to create an admin
-  // then go in MongoDB change Admin user role from "customer" to "admin"
-  // then run tests again
+  // So run `npm test` first to create a user called "Admin user" with a default role of "customer"
+  // then go to MongoDB and change Admin user's role from "customer" to "admin"
+  // restart the server then run `npm test` again
   testSession
     .post("/api/v1/auth/register")
     .send({

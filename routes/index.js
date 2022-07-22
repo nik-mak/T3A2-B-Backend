@@ -23,12 +23,18 @@ const sessionConfig = {
   proxy: true,
   cookie: {
     maxAge: 1000 * 60 * 60, // time span of cookie in ms
-    secure: true, // set to true in production for HTTPS only access
+    // set to true in production for HTTPS only access
+    // set to false for testing environment
+    // TEST can be set in the .env file
+    secure: process.env.TEST === "true" ? false : true,
     sameSite: "none",
-    httpOnly: true
+    httpOnly: true,
   },
   resave: false,
-  saveUninitialized: false, // set to false in production, user has to give consent
+  // set to false in production, user has to give consent
+  // set to true for testing environment
+  // TEST can be set in the .env file
+  saveUninitialized: process.env.TEST === "true" ? true : false,
   store: MongoStore.create({
     mongoUrl: process.env.MONGO_STORE_URI,
     autoRemove: "interval",

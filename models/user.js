@@ -23,7 +23,7 @@ const UserModel = mongoose.model(
       trim: true,
       validate: {
         validator: validateEmail,
-        message: "Failed to create/update User: Email format is not valid.",
+        message: "Failed to create/update User - Email format is not valid.",
       },
       match: [
         /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
@@ -32,10 +32,10 @@ const UserModel = mongoose.model(
     },
     password: {
       type: String,
-      required: [true, "Failed to create/update User: Password is required."],
+      required: [true, "Failed to create/update User - Password is required."],
       minlength: [
         8,
-        "Failed to create/update User: Minimum length for password is 8 characters.",
+        "Failed to create/update User - Minimum length for password is 8 characters.",
       ],
     },
     role: {

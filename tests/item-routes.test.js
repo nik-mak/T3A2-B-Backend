@@ -6,7 +6,7 @@ const ItemModel = require("../models/item");
 let testSession = null;
 let authenticatedSession = null;
 
-// Clearing the items in the DB
+// Clearing the items in the DB to make sure it doesn't impact the tests
 beforeAll((done) => {
   ItemModel.deleteMany({}, (err) => {
     if (err) return done(err);
@@ -17,6 +17,10 @@ beforeAll((done) => {
 beforeAll((done) => {
   testSession = session(app);
   // creating a mock user for the tests
+  // Admin can only be created at the DB
+  // So run test first to create an admin
+  // then go in MongoDB change Admin user role from "customer" to "admin"
+  // then run tests again
   testSession
     .post("/api/v1/auth/register")
     .send({
@@ -39,14 +43,15 @@ beforeAll((done) => {
 
 afterAll(() => mongoose.connection.close());
 
+// db calls can be slow so setting a higher timeout
 jest.setTimeout(10000);
 
 describe("Items routes", () => {
   test("Raise error if cannot find individual item from the catalogue", (done) => {
     authenticatedSession
       .get("/api/v1/items/1234567")
-      .expect(404, { error: "Enable to find item with id 1234567" })
-      .expect("Content-Type", /json/)
+      .expect(404, "Enable to find item with id 1234567")
+      .expect("Content-Type", /text/)
       .end(function (err, res) {
         if (err) return done(err);
         return done();
@@ -75,7 +80,7 @@ describe("Items routes", () => {
       .set("Content-Type", "multipart/form-data")
       .field("name", "Just another t-shirt")
       .field("price", 15)
-      .expect(400, { error: "Image not uploaded successfully!" })
+      .expect(400, "Image not uploaded successfully!")
       .end(function (err, res) {
         if (err) return done(err);
         return done();

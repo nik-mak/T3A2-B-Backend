@@ -21,15 +21,31 @@ Note: If you run into files not found when you have started the server but the c
 
 ### Testing
 1. Set up the .env file with TEST="true"
+
+
 ![env-file](./docs/env-file.png)
+
+
 2. Start the server
 3. Run npm test (5 tests should fail)
+
+
 ![initial-test](./docs/initial-test.png)
+
+
 4. Go to MongoDB and change Admin user's role to role: "admin"
+
+
 ![update user in db](./docs/update-user-db.png)
+
+
 5. Restart the server
+
 6. Run npm test (11 tests should pass)
+
+
 ![final-test](./docs/final-test.png)
+
 
 # Dependencies
 

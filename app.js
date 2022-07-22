@@ -9,7 +9,10 @@ app.use(express.json());
 
 app.use(
   cors({
-    origin: "https://www.desperate-housewares.com",
+    origin:
+      process.env.DEV === "true"
+        ? "http://localhost:3000"
+        : "https://www.desperate-housewares.com",
     credentials: true,
   })
 );

@@ -7,7 +7,8 @@ To begin installing this app please clone the app into a folder from github. [li
 1. Open the terminal
 2. CD into the dh-frontend-cra directory after cloning it as above. 
 3. Type into the terminal 'npm install' and wait for it to complete the installation.
-4. Type into the terminal 'npm run dev' to start the application on your local machine.
+4. In the `.env` file add the required values.
+5. Type into the terminal 'npm run dev' to start the application on your local machine.
 
 ### Create an Admin Account
 To create an admin account, it will need to be done manually in the database. This is so that it's not possible to create a admin account in the browser. 
@@ -17,6 +18,9 @@ To create an admin account, it will need to be done manually in the database. Th
 3. Change the role of the user from `role: "customer"` to `role: "admin"`
 
 Note: If you run into files not found when you have started the server but the components are present make sure that the directory name for the component matches the import statement. This should not effect your build if you deploy the website online using a platform such as netlify.
+
+### Testing
+To run the tests simple run `npm run test`
 
 # Dependencies
 

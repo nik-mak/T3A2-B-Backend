@@ -20,7 +20,7 @@ To create an admin account, it will need to be done manually in the database. Th
 Note: If you run into files not found when you have started the server but the components are present make sure that the directory name for the component matches the import statement. This should not effect your build if you deploy the website online using a platform such as netlify.
 
 ### Testing
-To run the tests simple run `npm run test`
+To run the tests run `npm run test`
 
 # Dependencies
 

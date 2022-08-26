@@ -1,4 +1,4 @@
-Full readme can be found here: https://github.com/desperate-housewares/app-readme
+Full readme can be found here: https://github.com/nik-mak/T3A2-A-Readme
 
 Frontend can be found here: https://github.com/nik-mak/T3A2-B-Frontend
 # Installation

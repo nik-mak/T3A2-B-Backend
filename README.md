@@ -1,6 +1,6 @@
 Full readme can be found here: https://github.com/desperate-housewares/app-readme
 
-Backend can be found here: https://github.com/nik-mak/T3A2-B-Frontend
+Frontend can be found here: https://github.com/nik-mak/T3A2-B-Frontend
 # Installation
 
 To begin installing this app please clone the app into a folder from github. [link](https://github.com/desperate-housewares/dh-backend)
